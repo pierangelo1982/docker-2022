@@ -10,6 +10,9 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
       #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
@@ -38,7 +41,6 @@ services:
       - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.p82.it`)"
       - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
       - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
-      - "traefik.http.middlewares.phpmyadmin.headers.customrequestheaders.X-Forwarded-Proto=https"
     links:
     - mysql:db
   wordpress:
@@ -49,7 +51,5 @@ services:
       - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
       - "traefik.http.routers.wordpress.entrypoints=websecure"
       - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
-      - "traefik.http.middlewares.wordpress.headers.customrequestheaders.X-Forwarded-Proto=https"
-
     links:
     - mysql:db
