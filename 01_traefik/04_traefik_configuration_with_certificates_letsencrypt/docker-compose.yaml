@@ -38,6 +38,8 @@ services:
       - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.p82.it`)"
       - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
       - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - traefik.http.routers.wordpress.tls.domains[0].main=p82.it
+      - traefik.http.routers.wordpress.tls.domains[0].sans=*.p82.it
     links:
     - mysql:db
   wordpress:
@@ -48,3 +50,5 @@ services:
       - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
       - "traefik.http.routers.wordpress.entrypoints=websecure"
       - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
+      - traefik.http.routers.wordpress.tls.domains[0].main=p82.it
+      - traefik.http.routers.wordpress.tls.domains[0].sans=*.p82.it
