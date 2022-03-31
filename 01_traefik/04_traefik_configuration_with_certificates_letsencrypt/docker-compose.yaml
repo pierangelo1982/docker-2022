@@ -35,6 +35,15 @@ services:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
       - ./letsencrypt:/letsencrypt
+    labels:
+      - "traefik.http.middlewares.traefik-compress.compress=true"
+      - "traefik.http.middlewares.auth.basicauth.users=<USER-PASSWORD-OUTPUT>"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`<TRAEFIK.FQDN>`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.middlewares=traefik-compress,auth"
   mysql:
     # A container that exposes an API to show its IP address
     image: mysql:5.7
