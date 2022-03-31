@@ -1,17 +1,18 @@
-version: '3'
+version: "3.3"
 
 services:
+
   traefik:
     image: "traefik:v2.6"
     container_name: "traefik"
     command:
-      - "--log.level=DEBUG"
+      #- "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.myresolver.acme.email=pierangelo1982@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
@@ -20,41 +21,12 @@ services:
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
     labels:
-      - "traefik.http.middlewares.traefik-compress.compress=true"
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`<TRAEFIK.FQDN>`)"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.middlewares=traefik-compress"
-  mysql:
-    # A container that exposes an API to show its IP address
-    image: "mysql:5.7"
-    container_name: "mysql"
-    environment:
-      MYSQL_ROOT_PASSWORD: 'password1234'
-    # labels:
-    #   - "traefik.http.routers.mysql.rule=Host(`mysql.docker.localhost`)"
-  phpmyadmin:
-    # A container that exposes an API to show its IP address
-    image: "phpmyadmin/phpmyadmin"
-    container_name: "phpmyadmin"
-    labels:
-    - "traefik.enable=true"
-    - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.p82.it`)"
-    - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
-    - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
-    links:
-    - mysql:db
-  wordpress:
-    # A container that exposes an API to show its IP address
-    image: "wordpress"
-    container_name: "wordpress"
-    labels:
-    - "traefik.enable=true"
-    - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
-    - "traefik.http.routers.wordpress.entrypoints=websecure"
-    - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
-    links:
-    - mysql:db
+      - "traefik.http.routers.whoami.rule=Host(`wordpress.p82.it`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
