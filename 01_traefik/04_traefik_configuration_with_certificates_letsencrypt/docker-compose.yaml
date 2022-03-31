@@ -14,6 +14,23 @@ services:
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
+    ###
+    entryPoints:
+      web:
+        address: ":80"
+
+      websecure:
+        address: ":443"
+
+    certificatesResolvers:
+      myresolver:
+        acme:
+          email: pierangelo1982@gmail.com
+          storage: acme.json
+          httpChallenge:
+            # used during the challenge
+            entryPoint: web
+    ###
   mysql:
     # A container that exposes an API to show its IP address
     image: mysql:5.7
@@ -26,6 +43,10 @@ services:
     image: phpmyadmin/phpmyadmin
     labels:
       - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.p82.it`)"
+      - "traefik.http.routers.phpmyadmin.tls=true"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - "traefik.http.routers.phpmyadmin.tls.domains[0].main=phpmyadmin.p82.it"
+      - "traefik.http.routers.phpmyadmin.tls.domains[0].sans=*.phpmyadmin.p82.it"
     links:
     - mysql:db
   wordpress:
@@ -33,5 +54,9 @@ services:
     image: wordpress
     labels:
       - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
+      - "traefik.http.routers.phpmyadmin.tls=true"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - "traefik.http.routers.phpmyadmin.tls.domains[0].main=wordpress.p82.it"
+      - "traefik.http.routers.phpmyadmin.tls.domains[0].sans=*.wordpress.p82.it"
     links:
     - mysql:db

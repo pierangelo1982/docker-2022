@@ -1,14 +1,10 @@
-# traefik configuration with host (online)
+# traefik configuration with host (online) with certificates
 
-reach 4 isolated app though traefik
+reach 2 isolated app though traefik on domains
 
-- [whoami.docker.localhost](http://whoami.docker.localhost/)
+- [http://wordpress.p82.it](http://wordpress.p82.it)
 
-- [wordpress.docker.localhost](http://wordpress.docker.localhost/)
-
-- [mysql.docker.localhost](http://mysql.docker.localhost/)
-
-- [phpmyadmin.docker.localhost](http://phpmyadmin.docker.localhost/)
+- [http://phpmyadmin.p82.it](http://phpmyadmin.p82.it)
 
 `docker-compose up -d`
 
