@@ -44,7 +44,7 @@ services:
     labels:
       - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.p82.it`)"
       - "traefik.http.routers.phpmyadmin.tls=true"
-      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "traefik.http.routers.phpmyadmin.tls.domains[0].main=phpmyadmin.p82.it"
       - "traefik.http.routers.phpmyadmin.tls.domains[0].sans=*.phpmyadmin.p82.it"
     links:
