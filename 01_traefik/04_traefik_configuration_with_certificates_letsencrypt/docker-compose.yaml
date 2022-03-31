@@ -24,9 +24,9 @@ services:
 
   whoami:
     image: "wordpress"
-    container_name: "wordpress"
+    container_name: "simple-service"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
-      - "traefik.http.routers.wordpress.entrypoints=websecure"
-      - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
+      - "traefik.http.routers.whoami.rule=Host(`wordpress.p82.it`)"
+      - "traefik.http.routers.whoami.entrypoints=websecure"
+      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
