@@ -48,3 +48,5 @@ services:
       - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
       - "traefik.http.routers.wordpress.entrypoints=websecure"
       - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
+    links:
+    - mysql:db
