@@ -22,12 +22,29 @@ services:
     volumes:
       - "./letsencrypt:/letsencrypt"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-
-  whoami:
+  mysql:
+    # A container that exposes an API to show its IP address
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password1234'
+    # labels:
+    #   - "traefik.http.routers.mysql.rule=Host(`mysql.docker.localhost`)"
+  phpmyadmin:
+    # A container that exposes an API to show its IP address
+    image: phpmyadmin/phpmyadmin
+    container_name: "phpmyadmin"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.p82.it`)"
+      - "traefik.http.routers.phpmyadmin.entrypoints=websecure"
+      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
+    links:
+    - mysql:db
+  wordpress:
     image: "wordpress"
     container_name: "simple-service"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`wordpress.p82.it`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls.certresolver=myresolver"
+      - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
+      - "traefik.http.routers.wordpress.entrypoints=websecure"
+      - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
