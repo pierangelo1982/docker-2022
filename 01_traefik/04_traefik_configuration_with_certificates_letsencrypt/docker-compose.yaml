@@ -1,40 +1,25 @@
 version: '3'
 
 services:
-  reverse-proxy:
-    # The official v2 Traefik docker image
-    image: traefik:v2.6
-    # Enables the web UI and tells Traefik to listen to docker
+  traefik:
+    image: "traefik:v2.6"
+    container_name: "traefik"
     command:
+      #- "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
       - "--certificatesresolvers.myresolver.acme.email=pierangelo1982@gmail.com"
       - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
-      # The HTTP port
-      - "80:80"
       - "443:443"
-      # The Web UI (enabled by --api.insecure=true)
       - "8080:8080"
     volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./letsencrypt:/letsencrypt
-    labels:
-      - "traefik.http.middlewares.traefik-compress.compress=true"
-      - "traefik.http.middlewares.auth.basicauth.users=<USER-PASSWORD-OUTPUT>"
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`<TRAEFIK.FQDN>`)"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
-      - "traefik.http.routers.traefik.service=api@internal"
-      - "traefik.http.routers.traefik.middlewares=traefik-compress,auth"
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
   mysql:
     # A container that exposes an API to show its IP address
     image: mysql:5.7
@@ -46,27 +31,20 @@ services:
     # A container that exposes an API to show its IP address
     image: phpmyadmin/phpmyadmin
     labels:
-      - "traefik.http.routers.phpmyadmin.rule=Host(`phpmyadmin.p82.it`)"
-      - "traefik.http.routers.phpmyadmin.tls=true"
-      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
-      - "traefik.http.routers.phpmyadmin.tls.domains[0].main=phpmyadmin.p82.it"
-      #- "traefik.http.routers.phpmyadmin.tls.domains[0].sans=*.phpmyadmin.p82.it"
+    - "traefik.enable=true"
+    - "traefik.http.routers.wordpress.rule=Host(`phpmyadmin.p82.it`)"
+    - "traefik.http.routers.wordpress.entrypoints=websecure"
+    - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
     links:
     - mysql:db
   wordpress:
     # A container that exposes an API to show its IP address
     image: wordpress
     labels:
-      - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
-      - "traefik.http.routers.phpmyadmin.tls=true"
-      - "traefik.http.routers.phpmyadmin.tls.certresolver=myresolver"
-      - "traefik.http.routers.phpmyadmin.tls.domains[0].main=wordpress.p82.it"
-      #- "traefik.http.routers.phpmyadmin.tls.domains[0].sans=*.wordpress.p82.it"
+    - "traefik.enable=true"
+    - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
+    - "traefik.http.routers.wordpress.entrypoints=websecure"
+    - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
+    
     links:
     - mysql:db
-
-volumes:
-  letsencrypt:
-networks:
-  registry_default:
-    external: true
