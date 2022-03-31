@@ -1,4 +1,4 @@
-# traefik configuration with host
+# traefik configuration with host (online)
 
 reach 4 isolated app though traefik
 
