@@ -5,7 +5,7 @@ services:
     image: "traefik:v2.6"
     container_name: "traefik"
     command:
-      #- "--log.level=DEBUG"
+      - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
@@ -22,7 +22,8 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
   mysql:
     # A container that exposes an API to show its IP address
-    image: mysql:5.7
+    image: "mysql:5.7"
+    container_name: "mysql"
     environment:
       MYSQL_ROOT_PASSWORD: 'password1234'
     # labels:
