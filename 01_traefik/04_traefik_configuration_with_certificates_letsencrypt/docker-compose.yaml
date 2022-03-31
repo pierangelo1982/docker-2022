@@ -29,7 +29,8 @@ services:
     #   - "traefik.http.routers.mysql.rule=Host(`mysql.docker.localhost`)"
   phpmyadmin:
     # A container that exposes an API to show its IP address
-    image: phpmyadmin/phpmyadmin
+    image: "phpmyadmin/phpmyadmin"
+    container_name: "phpmyadmin"
     labels:
     - "traefik.enable=true"
     - "traefik.http.routers.wordpress.rule=Host(`phpmyadmin.p82.it`)"
@@ -39,12 +40,12 @@ services:
     - mysql:db
   wordpress:
     # A container that exposes an API to show its IP address
-    image: wordpress
+    image: "wordpress"
+    container_name: "wordpress"
     labels:
     - "traefik.enable=true"
     - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
     - "traefik.http.routers.wordpress.entrypoints=websecure"
     - "traefik.http.routers.wordpress.tls.certresolver=myresolver"
-    
     links:
     - mysql:db
