@@ -38,3 +38,5 @@ services:
     image: wordpress
     labels:
       - "traefik.http.routers.wordpress.rule=Host(`wordpress.docker.localhost`)"
+    links:
+    - mysql:db
