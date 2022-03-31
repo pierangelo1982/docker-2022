@@ -32,6 +32,6 @@ services:
     # A container that exposes an API to show its IP address
     image: wordpress
     labels:
-      - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82`)"
+      - "traefik.http.routers.wordpress.rule=Host(`wordpress.p82.it`)"
     links:
     - mysql:db
